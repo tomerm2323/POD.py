@@ -8,6 +8,7 @@ import datetime
 import time
 
 
+
 class Mongoc:
 
     def __init__(self, db_name):
