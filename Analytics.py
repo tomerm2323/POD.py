@@ -2,7 +2,7 @@ import pandas as pd
 import pymongo
 import copy
 import _datetime
-from MongoClass import Mongoc
+#from MongoClass import Mongoc
 import numpy as np
 from scipy.optimize import curve_fit
 from sklearn.model_selection import train_test_split

@@ -3,9 +3,10 @@ import pandas as pd
 import copy
 import numpy as np
 import json
-from Analytics import  Analytics
+from Analytics import Analytics
 import datetime
 import time
+
 
 class Mongoc:
 
@@ -16,7 +17,7 @@ class Mongoc:
         self.pod_collection = self.db.pod
         self.node_collection = self.db.node
 
-    def get_collection(self, specifier,grace = False):
+    def get_collection(self, specifier, grace=False):
         if specifier == 'node':
             if grace:
                 return self.ngrace
@@ -34,7 +35,7 @@ class Mongoc:
             name = key['containers'][0]['name']
             cpu = float((key['containers'][0]['usage']['cpu'])[:-1])
             mem = float((key['containers'][0]['usage']['memory'])[:-2])
-            timestamp = time.mktime(datetime.datetime.strptime(key['timestamp'][:9], "%d/%m/%Y").timetuple())
+            timestamp = 'date'
             record = collection.find_one({'name': name})
             if record is None:
                 if specifier == 'node':
@@ -108,13 +109,13 @@ class Mongoc:
 
     def add_pod(self, name, timestamp, cpu, mem):
         self.pod_collection.insert({'name': name, 'timestamp': [timestamp], 'cpu': [float(cpu)], 'mem': [float(mem)],
-                                    'cluster': [], 'node': '', 'app': '', 'wc_pred': 0, 'wm_pred': 0})
+                                    'cluster': [], 'node': '', 'app': '', 'wc_pred': 0, 'wm_pred': 0, 'grace': True})
 
     def add_node(self, name, timestamp, cpu, mem):
         self.node_collection.insert({'name': name, 'timestamp': [timestamp], 'cpu': [float(cpu)], 'mem': [float(mem)],
                                      'pods': [], 'ratio': {'mem': 0, 'cpu': 1}, 'app': [],
                                      'wc_pred': 0, 'wm_pred': 0, 'limit': 0, 'request': 0,
-                                     'cpu_to_use': 0, 'mem_to_use': 0, 'familyType': 'no_family',})
+                                     'cpu_to_use': 0, 'mem_to_use': 0, 'familyType': 'no_family', 'grace': True})
 
     def get_app(self, name, specifier):
         collection = self.get_collection(specifier)

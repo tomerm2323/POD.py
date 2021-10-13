@@ -2,7 +2,6 @@ from MongoClass import Mongoc
 import pymongo
 import pandas as pd
 import copy
-
 from Analytics import Analytics
 import json
 
@@ -24,20 +23,6 @@ def print_hi(name):
 
     coll.insert_one(rec)
     coll.update_one({'cpu':4},{'$push':{'p':coll.find_one({'cpu':[4]})}})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     metric = """{
@@ -271,6 +256,8 @@ if __name__ == '__main__':
     # mydb = Mongoc('placeless')
     # mydb.update_collection(metric,'pod')
     # mydb.update_collection(metric, 'node')
+    # am = Analytics(mydb)
+    # print(am.get_peak('neosec-grpc-sniffer','pod','cpu'))
     # an = Analytics(mydb)
     # print(an.get_peak('neosec-grpc-sniffer','node','mem'))
     # print(an.fit_data(name='neosec-grpc-sniffer',specifier='node',data='cpu',models=[an.linear,an.sqr,an.cube,an.sin,an.log]))
