@@ -68,23 +68,23 @@ class Analytics:
 
         if model == 'linear':
             a, b = param
-            return [y for y in [self.linear(x_test, a, b)]]
+            return list(map(lambda x: self.linear(x, a, b), x_test))
 
         elif model == 'cube':
             a, b, c, d = param
-            return [y for y in [self.cube(x_test, a, b, c, d)]]
+            return list(map(lambda x: self.cube(x, a, b, c, d), x_test))
 
         elif model == 'square':
             a, b, c = param
-            return [y for y in [self.sqr(x_test, a, b, c)]]
+            return list(map(lambda x: self.sqr(x, a, b, c), x_test))
 
         elif model == 'sin':
             a, b, c = param
-            return [y for y in [self.sin(x_test, a, b, c)]]
+            return list(map(lambda x: self.sin(x, a, b, c), x_test))
 
         elif model == 'log':
             a, b, c = param
-            return [y for y in [self.log(x_test, a, b, c)]]
+            return list(map(lambda x: self.log(x, a, b, c), x_test))
 
     def fit_data(self, models, name, specifier, data):
 
@@ -97,33 +97,33 @@ class Analytics:
         models_lst = []
         # fitting 5 data models(linear, square, cube, sin and log)
         for model in list(models.items()):
-            param, _ = curve_fit(model[1], x_train, y_train)
+            param, _ = curve_fit(model[1], X_train, y_train)
             param = list(param)
-            y_pred = self.get_y_pred(model[0], param, x_test)
+            y_pred = self.get_y_pred(model[0], param, X_test)
             models_lst.append([model[0], r2_score(y_test, y_pred), mean_absolute_error(y_test, y_pred), model[1], param])
 
         # sorting by MAE
         models_lst.sort(key=lambda x: x[2], reverse=True)
-        index_lst = []
+        non_rev = []
         top_index = 0
         # filtering models
         for i in range(4):
             # checking if MAE between models is significant
             if abs(models_lst[top_index][2] - models_lst[i][2]) / models_lst[top_index][2] + 0.0001 > 0.05:
-                index_lst.append(i)
+                non_rev.append(models_lst[i])
             # checking if R^2 between models is significant
             elif abs(models_lst[top_index][1] - models_lst[i][1]) / models_lst[top_index][1] > 0.05:
                 if models_lst[top_index][1] > models_lst[i][1]:
-                    index_lst.append(top_index)
+                    non_rev.append(models_lst[top_index])
                     top_index = i
                 else:
-                    index_lst.append(i)
+                    non_rev.append(models_lst[i])
             else:
-                index_lst.append(i)
+                non_rev.append(models_lst[i])
 
         # removing models after filter
-        for i in index_lst:
-            models_lst.pop(i)
+        for model1 in non_rev:
+            models_lst.remove(model1)
 
         return models_lst[0]
 

@@ -37,7 +37,7 @@ class Mongoc:
             cpu = float((key['containers'][0]['usage']['cpu'])[:-1])
             mem = float((key['containers'][0]['usage']['memory'])[:-2])
             date = key['timestamp'][:10]
-            timestamp = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple())
+            timestamp = float(time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple()))
             record = collection.find_one({'name': name})
             if record is None:
                 if specifier == 'node':
@@ -51,14 +51,15 @@ class Mongoc:
         collection = self.get_collection(specifier)
         record = collection.find_one({'name': name}, {'_id': 0, data: 1, 'timestamp': 1})
         record = list(record.values())
-        if (timestamp == 0 and not all) or data == 'timestamp':
-            if data == 'timestamp':
-                return record[0][-1]
-            return record[1][-1]  # latest
-        if all or data == 'timestamp':
+        if all:
             if data == 'timestamp':
                 return record[0]
             return record[1]
+        elif timestamp == 0:
+            if data == 'timestamp':
+                return record[0][-1]
+            return record[1][-1]  # latest
+
         try:
             index = record[0].index(timestamp)
         except Exception:

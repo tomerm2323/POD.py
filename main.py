@@ -256,16 +256,18 @@ if __name__ == '__main__':
     mydb = Mongoc('placeless')
     mydb.update_collection(metric,'pod')
     mydb.update_collection(metric, 'node')
-    # am = Analytics(mydb)
+    am = Analytics(mydb)
+    m = {'linear': am.linear,'square':am.sqr,'cube':am.cube,'sin':am.sin,'log':am.log}
+    print(am.fit_data(m,'neosec-grpc-sniffer','node','cpu'))
     # print(am.get_peak('neosec-grpc-sniffer','pod','cpu'))
     # an = Analytics(mydb)
     # print(an.get_peak('neosec-grpc-sniffer','node','mem'))
     # print(an.fit_data(name='neosec-grpc-sniffer',specifier='node',data='cpu',models=[an.linear,an.sqr,an.cube,an.sin,an.log]))
     #metric = json.dumps(metric)
 
-    data = json.loads(metric)
-    for key in data['items']:
-       print(key['timestamp'][:10])
+    # data = json.loads(metric)
+    # for key in data['items']:
+    #    print(key['timestamp'][:10])
 
         #name = list(list(full_data[3])[0].values())[0]
         #cpu = list(list(list(full_data[3])[0].values())[1].values())[0][:-1]
