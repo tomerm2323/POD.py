@@ -35,7 +35,8 @@ class Mongoc:
             name = key['containers'][0]['name']
             cpu = float((key['containers'][0]['usage']['cpu'])[:-1])
             mem = float((key['containers'][0]['usage']['memory'])[:-2])
-            timestamp = 'date'
+            date = key['timestamp'][:10]
+            timestamp = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple())
             record = collection.find_one({'name': name})
             if record is None:
                 if specifier == 'node':
